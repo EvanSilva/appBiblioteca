@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import edu.badpals.bibliotecaandroid.API.models.Book;
+import edu.badpals.bibliotecaandroid.R;
+
 public class BookAdapter extends RecyclerView.Adapter{
 
     List<Book> books;
@@ -21,7 +23,7 @@ public class BookAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_slides, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_book, parent, false);
         return new BookViewHolder(view);
 
     }
@@ -35,20 +37,7 @@ public class BookAdapter extends RecyclerView.Adapter{
         viewHolder.tvIsbn.setText(book.getIsbn());
         viewHolder.tvAutor.setText(book.getAuthor());
 
-        bookRepository.getBookById(book.getId(), new BookRepository.ApiCallback<Book>() {
-            @Override
-            public void onSuccess(Book book) {
-
-
-                viewHolder.imgBook.setImageResource(book.getBookPicture());
-
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e("BookAdapter", "Error fetching book", t);
-            }
-        });
+        // HAY QUE AÑADIR QUE AÑADA FOTOS DE LOS LIBROS
 
 
 

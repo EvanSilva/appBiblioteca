@@ -6,6 +6,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import edu.badpals.bibliotecaandroid.R;
+
 public class BookViewHolder extends RecyclerView.ViewHolder{
 
     ImageView imgBook;
