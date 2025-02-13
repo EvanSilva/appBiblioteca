@@ -1,5 +1,6 @@
 package edu.badpals.bibliotecaandroid.API.repository;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ public class BookViewHolder extends RecyclerView.ViewHolder{
 
     ImageView imgBook;
     TextView tvTitulo, tvIsbn, tvAutor;
+    ImageButton btnInformacion;
 
     public BookViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -19,5 +21,6 @@ public class BookViewHolder extends RecyclerView.ViewHolder{
         tvTitulo = itemView.findViewById(R.id.txtBookTitle);
         tvIsbn = itemView.findViewById(R.id.txtBookIsbn);
         tvAutor = itemView.findViewById(R.id.txtBookAuthor);
+        btnInformacion = itemView.findViewById(R.id.btnGotoExtendedView);
     }
 }

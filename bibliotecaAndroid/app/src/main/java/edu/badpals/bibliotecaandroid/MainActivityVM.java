@@ -13,9 +13,6 @@ public class MainActivityVM extends ViewModel {
 
     List<User> users;
 
-
-
-
     MutableLiveData<User> user;
 
     public MainActivityVM(){

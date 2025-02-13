@@ -5,18 +5,18 @@
     android:id="@+id/rvExhibitor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BookExhibitorBookstore">
+    tools:context=".HallBookstore">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="407dp"
-            android:layout_height="727dp"
+            android:id="@+id/rvBookExhibitor"
+            android:layout_width="409dp"
+            android:layout_height="729dp"
             tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="1dp" />
+            tools:layout_editor_absoluteY="1dp"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

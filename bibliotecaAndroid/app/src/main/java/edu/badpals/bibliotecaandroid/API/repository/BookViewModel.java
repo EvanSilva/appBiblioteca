@@ -20,20 +20,24 @@ public class BookViewModel extends ViewModel {
         cargarBooks();
     }
 
-    private void cargarBooks() {
+    public void cargarBooks() {
+
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
             @Override
             public void onSuccess(List<Book> result) {
 
-                booksLiveData.postValue(result); // Se actualiza LiveData con los datos recibidos
+                booksLiveData.setValue(result);
             }
 
             @Override
             public void onFailure(Throwable t) {
-                // Mostrar mensaje de error
 
             }
         });
+    }
+
+    public MutableLiveData<List<Book>> getBooksLiveData() {
+        return booksLiveData;
     }
 
 }

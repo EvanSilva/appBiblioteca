@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.List;
 
 import edu.badpals.bibliotecaandroid.API.models.BookLending;
+import edu.badpals.bibliotecaandroid.API.models.BookLendingForm;
 import edu.badpals.bibliotecaandroid.API.retrofit.ApiClient;
 import edu.badpals.bibliotecaandroid.API.retrofit.ApiService;
 import retrofit2.Call;
@@ -33,7 +34,7 @@ public class BookLendingRepository {
         });
     }
 
-    public void lendBook(BookLending lending, final BookRepository.ApiCallback<Boolean> callback) {
+    public void lendBook(BookLendingForm lending, final BookRepository.ApiCallback<Boolean> callback) {
         apiService.lendBook(lending).enqueue(new Callback<BookLending>() {
             @Override
             public void onResponse(Call<BookLending> call, Response<BookLending> response) {

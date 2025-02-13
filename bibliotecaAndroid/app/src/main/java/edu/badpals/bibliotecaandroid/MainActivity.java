@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         email = findViewById(R.id.txtInputEmail);
         password = findViewById(R.id.txtInputPassword);
 
-        List<User> users = new ArrayList<>();
-
         btnLogin.setOnClickListener(view -> {
 
             userRepository.getUsers(new BookRepository.ApiCallback<List<User>>() {
@@ -70,13 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
                             User usuarioLoggeado = UserProvider.getInstance();
 
-                            usuarioLoggeado.setId(user.getId());
-                            usuarioLoggeado.setName(user.getName());
-                            usuarioLoggeado.setEmail(user.getEmail());
-                            usuarioLoggeado.setPasswordHash(user.getPasswordHash());
-                            usuarioLoggeado.setDateJoined(user.getDateJoined());
-                            usuarioLoggeado.setBookLendings(user.getBookLendings());
-                            usuarioLoggeado.setProfilePicture(user.getProfilePicture());
+                            bindDatataUserSingleton(user, usuarioLoggeado);
 
                             Intent intent = new Intent(MainActivity.this, HallBookstore.class);
                             usuarioencontrado = true;
@@ -84,21 +76,14 @@ public class MainActivity extends AppCompatActivity {
                             finish();
 
                         } else {
-
                             Log.d(TAG, "USUARIO METIDO: " + email.getText().toString());
                             Log.d(TAG, "CONTRASEÑA METIDA: " + password.getText().toString());
-
                         }
                     }
-
                     if (usuarioencontrado == false) {
-
                         Toast.makeText(MainActivity.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
-
                     }
-
                 }
-
                 @Override
                 public void onFailure(Throwable t) {
                     Toast.makeText(MainActivity.this, "Conexion con la base de datos fallida", Toast.LENGTH_SHORT).show();
@@ -106,5 +91,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private static void bindDatataUserSingleton(User user, User usuarioLoggeado) {
+        usuarioLoggeado.setId(user.getId());
+        usuarioLoggeado.setName(user.getName());
+        usuarioLoggeado.setEmail(user.getEmail());
+        usuarioLoggeado.setPasswordHash(user.getPasswordHash());
+        usuarioLoggeado.setDateJoined(user.getDateJoined());
+        usuarioLoggeado.setBookLendings(user.getBookLendings());
+        usuarioLoggeado.setProfilePicture(user.getProfilePicture());
     }
 }

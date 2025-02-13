@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.badpals.bibliotecaandroid.API.models.Book;
 import edu.badpals.bibliotecaandroid.API.models.BookLending;
+import edu.badpals.bibliotecaandroid.API.models.BookLendingForm;
 import edu.badpals.bibliotecaandroid.API.models.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -52,7 +53,7 @@ public interface ApiService {
     Call<BookLending> getLending(@Path("id") int id);
 
     @POST("booklending")
-    Call<BookLending> lendBook(@Body BookLending lending);
+    Call<BookLending> lendBook(@Body BookLendingForm lending);
 
     @PUT("booklending/{id}/return")
     Call<Void> returnBook(@Path("id") int id);
