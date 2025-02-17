@@ -15,21 +15,61 @@
             android:id="@+id/btnGotoBookExhibitor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="128dp"
-            android:layout_marginBottom="56dp"
+            android:layout_marginBottom="52dp"
             android:text="Listado de libros"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.19"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/btnGotoBookExhibitor2"
+            android:id="@+id/btnGotoPersonalData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="124dp"
-            android:layout_marginBottom="116dp"
-            android:text="Listado de libros"
+            android:layout_marginStart="38dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="52dp"
+            android:text="Perfil"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnGotoBookExhibitor" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNovedades"
+            android:layout_width="306dp"
+            android:layout_height="240dp"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="116dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="88dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginBottom="42dp"
+            android:text="Recomendaciónes del día"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/rvNovedades"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/txtDatoCurioso"
+            android:layout_width="306dp"
+            android:layout_height="237dp"
+            android:layout_marginBottom="108dp"
+            android:text="asdasdas"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvNovedades"
+            app:layout_constraintVertical_bias="0.566" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

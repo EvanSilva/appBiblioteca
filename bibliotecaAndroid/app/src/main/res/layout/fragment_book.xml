@@ -60,10 +60,10 @@
             android:id="@+id/btnGotoExtendedView"
             android:layout_width="42dp"
             android:layout_height="48dp"
+            android:layout_marginStart="12dp"
             android:adjustViewBounds="false"
             android:scaleType="fitCenter"
             android:src="@drawable/eye"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txtBookTitle"
             app:layout_constraintTop_toTopOf="@+id/txtBookTitle" />
 

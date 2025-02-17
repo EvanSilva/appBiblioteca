@@ -35,7 +35,7 @@ public class BookExhibitor extends AppCompatActivity {
     BookViewModel vm;
     EditText etFltrado;
     BookAdapter bookAdapter;
-    Button btnQrSeach;
+    Button btnQrSeach, btnGoBackToHall;
     BookRepository br = new BookRepository();
 
 
@@ -69,6 +69,7 @@ public class BookExhibitor extends AppCompatActivity {
 
         etFltrado = findViewById(R.id.etFiltrado);
         btnQrSeach = findViewById(R.id.btnQrSearch);
+        btnGoBackToHall = findViewById(R.id.btnBackToHall);
 
         recyclerViewBookExhibitor = findViewById(R.id.rvBookExhibitor);
         recyclerViewBookExhibitor.setLayoutManager(new LinearLayoutManager(this));
@@ -84,6 +85,11 @@ public class BookExhibitor extends AppCompatActivity {
                 bookAdapter = new BookAdapter(books);
                 recyclerViewBookExhibitor.setAdapter(bookAdapter);
             }
+        });
+
+        btnGoBackToHall.setOnClickListener(view -> {
+            Intent hallBookstore = new Intent(view.getContext(), HallBookstore.class);
+            startActivity(hallBookstore);
         });
 
         etFltrado.addTextChangedListener(new TextWatcher() {
