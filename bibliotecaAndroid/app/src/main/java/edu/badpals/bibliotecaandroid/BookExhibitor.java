@@ -5,13 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +26,7 @@ import java.util.stream.Collectors;
 
 import edu.badpals.bibliotecaandroid.API.models.Book;
 import edu.badpals.bibliotecaandroid.API.repository.BookAdapter;
+import edu.badpals.bibliotecaandroid.API.repository.BookRepository;
 import edu.badpals.bibliotecaandroid.API.repository.BookViewModel;
 
 public class BookExhibitor extends AppCompatActivity {
@@ -28,6 +36,30 @@ public class BookExhibitor extends AppCompatActivity {
     EditText etFltrado;
     BookAdapter bookAdapter;
     Button btnQrSeach;
+    BookRepository br = new BookRepository();
+
+
+    private final ActivityResultLauncher<Intent> qrLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    IntentResult scanResult = IntentIntegrator.parseActivityResult(
+                            result.getResultCode(), result.getResultCode(), data);
+
+                    if (scanResult != null && scanResult.getContents() != null) {
+                        String qrContenido = scanResult.getContents();
+
+                            Intent intent = new Intent(this, BookDetail.class);
+                            intent.putExtra("id", Integer.parseInt(qrContenido));
+
+                        Toast.makeText(this, "Código QR: " + qrContenido, Toast.LENGTH_LONG).show();
+
+                    } else {
+                        Toast.makeText(this, "No se escaneó ningún código", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -77,9 +109,16 @@ public class BookExhibitor extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
+        btnQrSeach.setOnClickListener(v -> {
+            IntentIntegrator integrator = new IntentIntegrator(BookExhibitor.this);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+            integrator.setPrompt("Escanea un código QR");
+            integrator.setCameraId(0);
+            integrator.setBeepEnabled(true);
+            integrator.setBarcodeImageEnabled(true);
 
-
+            Intent scanIntent = integrator.createScanIntent();
+            qrLauncher.launch(scanIntent);
+        });
     }
-
-
 }
