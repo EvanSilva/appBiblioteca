@@ -12,7 +12,7 @@ public class Book {
     private boolean isAvailable;
 
     private List<BookLending> bookLendings;
-    // Getters & Setters
+
 
 
     public int getId() {

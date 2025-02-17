@@ -47,8 +47,8 @@ public class BookAdapter extends RecyclerView.Adapter{
         Book book = books.get(position);
 
         viewHolder.tvTitulo.setText(book.getTitle());
-        viewHolder.tvIsbn.setText(book.getIsbn());
-        viewHolder.tvAutor.setText(book.getAuthor());
+        viewHolder.tvIsbn.setText("ISBN: " + book.getIsbn());
+        viewHolder.tvAutor.setText("Autor: " + book.getAuthor());
 
         viewHolder.btnInformacion.setOnClickListener(view -> {
 

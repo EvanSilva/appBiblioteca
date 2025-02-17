@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.util.List;
 
 import edu.badpals.bibliotecaandroid.API.models.Book;
+import edu.badpals.bibliotecaandroid.API.models.BookLending;
 import edu.badpals.bibliotecaandroid.API.models.BookLendingForm;
 import edu.badpals.bibliotecaandroid.API.models.User;
 import edu.badpals.bibliotecaandroid.API.repository.BookLendingRepository;
@@ -59,11 +60,23 @@ public class BookDetail extends AppCompatActivity {
         isbn = findViewById(R.id.txtIsbn);
         reservado = findViewById(R.id.txtDisponible);
 
-        br.getBookById(getIntent().getIntExtra("id", 1), new BookRepository.ApiCallback<Book>() {
+        int idBookActual = getIntent().getIntExtra("id", 1);
+        Book bookActual = new Book();
+
+        br.getBookById(idBookActual, new BookRepository.ApiCallback<Book>() {
             @Override
             public void onSuccess(Book result) {
+
+                if (result.isAvailable()) {
+                    reservar.setText("Reservar");
+                } else {
+                    reservar.setText("Devolver");
+                }
+
                 if (result.getBookPicture().equals("")) {
+
                     imageView.setImageResource(R.drawable.missin);
+
                 } else {
                     ir.getImage(result.getBookPicture(), new BookRepository.ApiCallback<ResponseBody>() {
                         @Override
@@ -82,6 +95,7 @@ public class BookDetail extends AppCompatActivity {
                         }
                     });
                 }
+
                 titulo.setText(result.getTitle());
                 autor.setText(result.getAuthor());
                 isbn.setText(result.getIsbn());
@@ -98,25 +112,66 @@ public class BookDetail extends AppCompatActivity {
             startActivity(intent);
         });
 
+
+
         reservar.setOnClickListener(view -> {
 
-            BookLendingForm blf = new BookLendingForm(getIntent().getIntExtra("id", 1), usuarioLoggeado.getId());
-
-            blr.lendBook(blf, new BookRepository.ApiCallback<Boolean>() {
+            br.getBookById(getIntent().getIntExtra("id", 1), new BookRepository.ApiCallback<Book>() {
 
                 @Override
-                public void onSuccess(Boolean result) {
+                public void onSuccess(Book bookActual) {
 
-                    Toast.makeText(BookDetail.this, "Libro reservado", Toast.LENGTH_SHORT).show();
+                    if (bookActual.isAvailable()) {
 
-                    Log.d("UWU", result.toString());
+                        blr.lendBook(usuarioLoggeado.getId(), idBookActual, new BookRepository.ApiCallback<Boolean>() {
+
+                            @Override
+                            public void onSuccess(Boolean result) {
+                                Toast.makeText(BookDetail.this, "Libro reservado", Toast.LENGTH_SHORT).show();
+                                reservar.setText("Devolver");
+                                reservado.setText("No Disponible");
+                            }
+                            @Override
+                            public void onFailure(Throwable t) {
+                                Toast.makeText(BookDetail.this, "Error al reservar el libro", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    if (!bookActual.isAvailable()) {
+                        
+                        List<BookLending> prestamosHistorico = bookActual.getBookLendings();
+                        BookLending prestamoADevolver = null;
+                        for (BookLending prestamo : prestamosHistorico) {
+                            if (prestamo.getReturnDate() == null) {
+                                prestamoADevolver = prestamo;
+                                break;
+                            }
+                        }
+                        
+                        blr.returnBook(prestamoADevolver.getId(), new BookRepository.ApiCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean result) {
+                                Toast.makeText(BookDetail.this, "Se ha regresado el libro", Toast.LENGTH_SHORT).show();
+                                reservar.setText("Reservar");
+                                reservado.setText("Disponible");
+                            }
+                            @Override
+                            public void onFailure(Throwable t) {
+
+                                Toast.makeText(BookDetail.this, "Error al devolver el libro", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                    }
+
                 }
-
                 @Override
                 public void onFailure(Throwable t) {
-                    Toast.makeText(BookDetail.this, "Error al reservar el libro", Toast.LENGTH_SHORT).show();
+
                 }
             });
+
         });
 
     }
