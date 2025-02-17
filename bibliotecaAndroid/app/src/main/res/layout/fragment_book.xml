@@ -61,12 +61,11 @@
             android:layout_width="42dp"
             android:layout_height="48dp"
             android:adjustViewBounds="false"
-            android:src="@drawable/eye"
             android:scaleType="fitCenter"
+            android:src="@drawable/eye"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.956"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintStart_toEndOf="@+id/txtBookTitle"
+            app:layout_constraintTop_toTopOf="@+id/txtBookTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

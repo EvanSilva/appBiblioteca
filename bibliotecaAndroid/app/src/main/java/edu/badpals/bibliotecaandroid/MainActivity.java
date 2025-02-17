@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-
             userRepository.getUsers(new BookRepository.ApiCallback<List<User>>() {
 
                 @Override
