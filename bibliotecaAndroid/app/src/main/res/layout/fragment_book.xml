@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/txtBookAuthor"
-            android:layout_width="199dp"
+            android:layout_width="91dp"
             android:layout_height="21dp"
             android:layout_marginStart="28dp"
             android:layout_marginTop="64dp"
@@ -45,27 +45,17 @@
             app:layout_constraintStart_toEndOf="@+id/imgBook"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/txtBookIsbn"
-            android:layout_width="200dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="84dp"
-            android:text="TextView"
-            android:textAlignment="textStart"
-            app:layout_constraintStart_toEndOf="@+id/imgBook"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageButton
             android:id="@+id/btnGotoExtendedView"
-            android:layout_width="42dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
+            android:layout_width="33dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="80dp"
             android:adjustViewBounds="false"
             android:scaleType="fitCenter"
             android:src="@drawable/eye"
-            app:layout_constraintStart_toEndOf="@+id/txtBookTitle"
-            app:layout_constraintTop_toTopOf="@+id/txtBookTitle" />
+            app:layout_constraintEnd_toEndOf="@+id/txtBookTitle"
+            app:layout_constraintTop_toBottomOf="@+id/txtBookTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

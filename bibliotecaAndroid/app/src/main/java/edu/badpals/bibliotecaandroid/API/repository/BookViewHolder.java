@@ -19,7 +19,6 @@ public class BookViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
         imgBook = itemView.findViewById(R.id.imgBook);
         tvTitulo = itemView.findViewById(R.id.txtBookTitle);
-        tvIsbn = itemView.findViewById(R.id.txtBookIsbn);
         tvAutor = itemView.findViewById(R.id.txtBookAuthor);
         btnInformacion = itemView.findViewById(R.id.btnGotoExtendedView);
     }
