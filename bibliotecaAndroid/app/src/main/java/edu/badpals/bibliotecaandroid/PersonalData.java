@@ -1,30 +1,26 @@
 package edu.badpals.bibliotecaandroid;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import edu.badpals.bibliotecaandroid.API.models.Book;
 import edu.badpals.bibliotecaandroid.API.models.BookLending;
 import edu.badpals.bibliotecaandroid.API.models.User;
 import edu.badpals.bibliotecaandroid.API.repository.BookAdapter;
+import edu.badpals.bibliotecaandroid.API.repository.BookRepository;
 import edu.badpals.bibliotecaandroid.API.repository.BookViewModel;
 import edu.badpals.bibliotecaandroid.API.repository.UserProvider;
+import edu.badpals.bibliotecaandroid.API.repository.UserRepository;
 
 public class PersonalData extends AppCompatActivity {
 
@@ -32,50 +28,82 @@ public class PersonalData extends AppCompatActivity {
     BookViewModel vm;
     BookAdapter bookAdapter;
     Button btnGoBackToHall;
+    UserRepository userRepository;
+    BookRepository bookRepository;
+    PersonalDataViewModel personalDataViewModel;
 
-    User user = UserProvider.getInstance();
+    User loggedUser = UserProvider.getInstance();
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data);
-
 
         recyclerViewPersonalData = findViewById(R.id.rvPersonalData);
         recyclerViewPersonalData.setLayoutManager(new LinearLayoutManager(this));
 
+
+        //-----------
+        personalDataViewModel = new ViewModelProvider(this).get(PersonalDataViewModel.class);
+
+        personalDataViewModel.getUserLiveData().observe(this, user -> {
+            if (user == null) {
+                Toast.makeText(this, "Error al cargar los datos del usuario", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+
+        personalDataViewModel.getBooksLentLiveData().observe(this, booksLent -> {
+
+            bookAdapter = new BookAdapter(booksLent);
+            recyclerViewPersonalData.setAdapter(bookAdapter);
+        });
+        //----------------
+
         vm = new ViewModelProvider(this).get(BookViewModel.class);
+        userRepository = new UserRepository();
 
         vm.getBooksLiveData().observe(this, books -> {
 
-            // REHACER CODIGO PARA BUSCAR DIRECTAMENTE DESDE BOOKLENDINGS
+            userRepository.getUserById(loggedUser.getId(), new BookRepository.ApiCallback<User>() {
 
+                @Override
+                public void onSuccess(User result) {
 
-            if (books != null && !books.isEmpty()) {
+                    List<BookLending> librosPrestadosAlUser = new ArrayList<>();
 
-                List<Book> lentBooksForThisUser = new ArrayList<>();
-                for (Book book : books) {
-
-                    List<BookLending> bookLendings = book.getBookLendings();
-                    if (bookLendings != null && !bookLendings.isEmpty()) {
-
-                        BookLending lastLending = bookLendings.get(bookLendings.size() - 1);
-                        if (lastLending.getUserId() == user.getId()) {
-                            lentBooksForThisUser.add(book);
+                    for (BookLending bookLending : result.getBookLendings()) {
+                        if (bookLending.getReturnDate() == null) {
+                            librosPrestadosAlUser.add(bookLending);
                         }
                     }
+
+                    for (BookLending bookLending : librosPrestadosAlUser) {
+                        bookRepository.getBookById(bookLending.getBookId(), new BookRepository.ApiCallback<Book>() {
+                            @Override
+                            public void onSuccess(Book result) {
+                                personalDataViewModel.addBookLent(result);
+                                bookAdapter.notifyDataSetChanged();
+                            }
+                            @Override
+                            public void onFailure(Throwable t) {
+
+                            }
+                        });
+                    }
+
+
                 }
-                bookAdapter = new BookAdapter(lentBooksForThisUser);
-                recyclerViewPersonalData.setAdapter(bookAdapter);
 
-            } else {
-                Toast.makeText(this, "No hay libros prestados para este usuario", Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+            });
         });
-
-
-
-
     }
 }

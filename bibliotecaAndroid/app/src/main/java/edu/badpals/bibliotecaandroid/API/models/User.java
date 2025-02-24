@@ -13,7 +13,6 @@ public class User {
     private String profilePicture;
     // Getters & Setters
 
-
     public int getId() {
         return id;
     }

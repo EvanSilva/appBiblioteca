@@ -81,10 +81,12 @@ public class BookExhibitor extends AppCompatActivity {
         recyclerViewBookExhibitor.setAdapter(bookAdapter);
 
         vm.getBooksLiveData().observe(this, books -> {
+
             if (books != null) {
                 bookAdapter = new BookAdapter(books);
                 recyclerViewBookExhibitor.setAdapter(bookAdapter);
             }
+
         });
 
         btnGoBackToHall.setOnClickListener(view -> {
