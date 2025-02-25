@@ -2,6 +2,7 @@ package edu.badpals.bibliotecaandroid;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ public class PersonalData extends AppCompatActivity {
 
         vm = new ViewModelProvider(this).get(BookViewModel.class);
         userRepository = new UserRepository();
+        bookRepository = new BookRepository();
 
         vm.getBooksLiveData().observe(this, books -> {
 
@@ -82,23 +84,33 @@ public class PersonalData extends AppCompatActivity {
                         }
                     }
 
-                    for (BookLending bookLending : librosPrestadosAlUser) {
-                        bookRepository.getBookById(bookLending.getBookId(), new BookRepository.ApiCallback<Book>() {
-                            @Override
-                            public void onSuccess(Book result) {
-                                personalDataViewModel.addBookLent(result);
-                                bookAdapter.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onFailure(Throwable t) {
-
-                            }
-                        });
+                    if (librosPrestadosAlUser.isEmpty()) {
+                        Toast.makeText(PersonalData.this, "No tienes libros prestados", Toast.LENGTH_SHORT).show();
                     }
 
+                    if (librosPrestadosAlUser.size() > 0) {
 
+                        Log.d("LIBROS ALQUILADOS" , String.valueOf(librosPrestadosAlUser.size()));
+
+                        for (BookLending bookLending : librosPrestadosAlUser) {
+
+                            bookRepository.getBookById(bookLending.getBookId(), new BookRepository.ApiCallback<Book>() {
+
+                                @Override
+                                public void onSuccess(Book result) {
+
+                                    personalDataViewModel.addBookLent(result);
+                                    bookAdapter.notifyDataSetChanged();
+
+                                }
+                                @Override
+                                public void onFailure(Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
                 }
-
                 @Override
                 public void onFailure(Throwable t) {
 

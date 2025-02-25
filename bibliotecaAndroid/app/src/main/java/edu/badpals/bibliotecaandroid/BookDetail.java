@@ -59,6 +59,7 @@ public class BookDetail extends AppCompatActivity {
         int idBookActual = getIntent().getIntExtra("id", 1);
 
         br.getBookById(idBookActual, new BookRepository.ApiCallback<Book>() {
+
             @Override
             public void onSuccess(Book result) {
                 reservar.setText(result.isAvailable() ? "Reservar" : "Devolver");
