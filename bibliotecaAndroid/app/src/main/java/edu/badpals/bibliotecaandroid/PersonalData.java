@@ -3,6 +3,7 @@ package edu.badpals.bibliotecaandroid;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -46,8 +47,6 @@ public class PersonalData extends AppCompatActivity {
         recyclerViewPersonalData = findViewById(R.id.rvPersonalData);
         recyclerViewPersonalData.setLayoutManager(new LinearLayoutManager(this));
 
-
-        //-----------
         personalDataViewModel = new ViewModelProvider(this).get(PersonalDataViewModel.class);
 
         personalDataViewModel.getUserLiveData().observe(this, user -> {
@@ -55,7 +54,6 @@ public class PersonalData extends AppCompatActivity {
                 Toast.makeText(this, "Error al cargar los datos del usuario", Toast.LENGTH_SHORT).show();
                 return;
             }
-
         });
 
         personalDataViewModel.getBooksLentLiveData().observe(this, booksLent -> {
@@ -63,7 +61,10 @@ public class PersonalData extends AppCompatActivity {
             bookAdapter = new BookAdapter(booksLent);
             recyclerViewPersonalData.setAdapter(bookAdapter);
         });
-        //----------------
+
+        btnGoBackToHall = findViewById(R.id.goBackToHall);
+
+        btnGoBackToHall.setOnClickListener(v -> finish());
 
         vm = new ViewModelProvider(this).get(BookViewModel.class);
         userRepository = new UserRepository();
@@ -117,5 +118,6 @@ public class PersonalData extends AppCompatActivity {
                 }
             });
         });
+
     }
 }

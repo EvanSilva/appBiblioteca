@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Calendar;
 import java.util.List;
 
 import edu.badpals.bibliotecaandroid.API.models.Book;
@@ -38,7 +39,7 @@ public class BookDetail extends AppCompatActivity {
 
     Button volver, reservar;
     ImageView imageView;
-    TextView titulo, autor, isbn, reservado;
+    TextView titulo, autor, isbn, reservado, fechaDevolucion;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -55,6 +56,7 @@ public class BookDetail extends AppCompatActivity {
         autor = findViewById(R.id.txtAuthor);
         isbn = findViewById(R.id.txtIsbn);
         reservado = findViewById(R.id.txtDisponible);
+        fechaDevolucion = findViewById(R.id.txtFechaDevolucion);
 
         int idBookActual = getIntent().getIntExtra("id", 1);
 
@@ -119,8 +121,7 @@ public class BookDetail extends AppCompatActivity {
         });
 
         volver.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), BookExhibitor.class);
-            startActivity(intent);
+            finish();
         });
 
         reservar.setOnClickListener(view -> {
@@ -128,12 +129,47 @@ public class BookDetail extends AppCompatActivity {
                 @Override
                 public void onSuccess(Book bookActual) {
                     if (bookActual.isAvailable()) {
+
                         blr.lendBook(usuarioLoggeado.getId(), idBookActual, new BookRepository.ApiCallback<Boolean>() {
                             @Override
                             public void onSuccess(Boolean result) {
-                                Toast.makeText(BookDetail.this, "Libro reservado", Toast.LENGTH_SHORT).show();
+
                                 reservar.setText("Devolver");
                                 reservado.setText("No Disponible");
+
+                                List<BookLending> todosLosPrestamosDelLibro = bookActual.getBookLendings();
+
+                                for (BookLending prestamo : todosLosPrestamosDelLibro) {
+
+                                    if (prestamo.getReturnDate().isEmpty()) {
+
+                                        Integer dia = Calendar.DAY_OF_MONTH;
+                                        Integer mes = Calendar.MONTH;
+                                        Integer ano = Calendar.YEAR;
+
+                                        dia += 14;
+
+                                        if (dia > 30) {
+                                            mes += 1;
+                                            dia -= 30;
+                                        }
+
+                                        if (mes > 12) {
+                                            ano += 1;
+                                            mes -= 12;
+                                        }
+
+                                        String fechaARegresar = String.valueOf(dia + "/" + mes + "/" + ano  );
+
+                                        Toast.makeText(BookDetail.this, "Has de devolver el libro en la fecha  " + fechaARegresar, Toast.LENGTH_LONG).show();
+
+                                        prestamo.setReturnDate(fechaARegresar);
+
+                                        fechaDevolucion.setText(fechaARegresar);
+
+                                    }
+                                }
+
                             }
 
                             @Override
@@ -182,5 +218,8 @@ public class BookDetail extends AppCompatActivity {
                 }
             });
         });
+
+
+
     }
 }

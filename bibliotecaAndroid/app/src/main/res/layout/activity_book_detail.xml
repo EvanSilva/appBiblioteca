@@ -56,6 +56,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/txtFechaDevolucion"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="556dp"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/txtTitulo"
             android:layout_width="250dp"
             android:layout_height="45dp"

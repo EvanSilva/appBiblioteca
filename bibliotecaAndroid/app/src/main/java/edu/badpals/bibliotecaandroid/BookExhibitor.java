@@ -90,8 +90,7 @@ public class BookExhibitor extends AppCompatActivity {
         });
 
         btnGoBackToHall.setOnClickListener(view -> {
-            Intent hallBookstore = new Intent(view.getContext(), HallBookstore.class);
-            startActivity(hallBookstore);
+            finish();
         });
 
         etFltrado.addTextChangedListener(new TextWatcher() {
