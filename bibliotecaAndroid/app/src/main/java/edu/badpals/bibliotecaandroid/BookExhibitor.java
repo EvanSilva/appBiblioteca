@@ -1,7 +1,9 @@
 package edu.badpals.bibliotecaandroid;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -39,26 +41,37 @@ public class BookExhibitor extends AppCompatActivity {
     BookRepository br = new BookRepository();
 
 
-    private final ActivityResultLauncher<Intent> qrLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+    private final ActivityResultLauncher<Intent> qrLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    IntentResult scanResult = IntentIntegrator.parseActivityResult(
-                            result.getResultCode(), result.getResultCode(), data);
+                    if (data != null) {
+                        IntentResult scanResult = IntentIntegrator.parseActivityResult(result.getResultCode(), data);
+                        if (scanResult != null && scanResult.getContents() != null) {
+                            String qrData = scanResult.getContents();
 
-                    if (scanResult != null && scanResult.getContents() != null) {
-                        String qrContenido = scanResult.getContents();
+                            SharedPreferences prefs = getSharedPreferences("MisDatosQR", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("ultimo_qr", qrData);
+                            editor.apply();
 
                             Intent intent = new Intent(this, BookDetail.class);
-                            intent.putExtra("id", Integer.parseInt(qrContenido));
+                            intent.putExtra("id", qrData);
+                            startActivity(intent);
 
-                        Toast.makeText(this, "Código QR: " + qrContenido, Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(this, "Código escaneado: " + qrData, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "No se obtuvo información del QR", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(this, "No se escaneó ningún código", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No se recibieron datos del escáner", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(this, "Escaneo cancelado", Toast.LENGTH_SHORT).show();
                 }
             });
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -126,6 +139,7 @@ public class BookExhibitor extends AppCompatActivity {
 
             Intent scanIntent = integrator.createScanIntent();
             qrLauncher.launch(scanIntent);
+
         });
     }
 }

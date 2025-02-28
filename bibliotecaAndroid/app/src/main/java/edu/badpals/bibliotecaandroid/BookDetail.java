@@ -12,11 +12,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import edu.badpals.bibliotecaandroid.API.models.Book;
 import edu.badpals.bibliotecaandroid.API.models.BookLending;
@@ -39,7 +44,7 @@ public class BookDetail extends AppCompatActivity {
 
     Button volver, reservar;
     ImageView imageView;
-    TextView titulo, autor, isbn, reservado, fechaDevolucion;
+    TextView titulo, autor, isbn, reservado, tvfechaDevolucion;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -56,7 +61,7 @@ public class BookDetail extends AppCompatActivity {
         autor = findViewById(R.id.txtAuthor);
         isbn = findViewById(R.id.txtIsbn);
         reservado = findViewById(R.id.txtDisponible);
-        fechaDevolucion = findViewById(R.id.txtFechaDevolucion);
+        tvfechaDevolucion = findViewById(R.id.txtFechaDevolucion);
 
         int idBookActual = getIntent().getIntExtra("id", 1);
 
@@ -124,10 +129,13 @@ public class BookDetail extends AppCompatActivity {
             finish();
         });
 
+
         reservar.setOnClickListener(view -> {
+
             br.getBookById(idBookActual, new BookRepository.ApiCallback<Book>() {
                 @Override
                 public void onSuccess(Book bookActual) {
+
                     if (bookActual.isAvailable()) {
 
                         blr.lendBook(usuarioLoggeado.getId(), idBookActual, new BookRepository.ApiCallback<Boolean>() {
@@ -137,38 +145,6 @@ public class BookDetail extends AppCompatActivity {
                                 reservar.setText("Devolver");
                                 reservado.setText("No Disponible");
 
-                                List<BookLending> todosLosPrestamosDelLibro = bookActual.getBookLendings();
-
-                                for (BookLending prestamo : todosLosPrestamosDelLibro) {
-
-                                    if (prestamo.getReturnDate().isEmpty()) {
-
-                                        Integer dia = Calendar.DAY_OF_MONTH;
-                                        Integer mes = Calendar.MONTH;
-                                        Integer ano = Calendar.YEAR;
-
-                                        dia += 14;
-
-                                        if (dia > 30) {
-                                            mes += 1;
-                                            dia -= 30;
-                                        }
-
-                                        if (mes > 12) {
-                                            ano += 1;
-                                            mes -= 12;
-                                        }
-
-                                        String fechaARegresar = String.valueOf(dia + "/" + mes + "/" + ano  );
-
-                                        Toast.makeText(BookDetail.this, "Has de devolver el libro en la fecha  " + fechaARegresar, Toast.LENGTH_LONG).show();
-
-                                        prestamo.setReturnDate(fechaARegresar);
-
-                                        fechaDevolucion.setText(fechaARegresar);
-
-                                    }
-                                }
 
                             }
 
@@ -177,17 +153,13 @@ public class BookDetail extends AppCompatActivity {
                                 Toast.makeText(BookDetail.this, "Error al reservar el libro", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } else {
-                        List<BookLending> prestamosHistorico = bookActual.getBookLendings();
-                        BookLending prestamoADevolver = null;
-                        for (BookLending prestamo : prestamosHistorico) {
-                            if (prestamo.getReturnDate() == null) {
-                                prestamoADevolver = prestamo;
-                                break;
-                            }
-                        }
 
+
+                    } else {
+
+                        BookLending prestamoADevolver = getBookLending(bookActual);
                         if (prestamoADevolver != null) {
+
                             int idPrestatario = prestamoADevolver.getUserId();
                             int idUsuarioLogueado = usuarioLoggeado.getId();
 
@@ -196,12 +168,16 @@ public class BookDetail extends AppCompatActivity {
                                 return;
                             }
 
+
                             blr.returnBook(prestamoADevolver.getId(), new BookRepository.ApiCallback<Boolean>() {
                                 @Override
                                 public void onSuccess(Boolean result) {
+
                                     Toast.makeText(BookDetail.this, "Se ha regresado el libro", Toast.LENGTH_SHORT).show();
                                     reservar.setText("Reservar");
                                     reservado.setText("Disponible");
+                                    tvfechaDevolucion.setText("");
+
                                 }
 
                                 @Override
@@ -219,7 +195,42 @@ public class BookDetail extends AppCompatActivity {
             });
         });
 
-
-
     }
+
+    private static @Nullable BookLending getBookLending(Book bookActual) {
+
+        List<BookLending> prestamosHistorico = bookActual.getBookLendings();
+        BookLending prestamoADevolver = null;
+
+        for (BookLending prestamo : prestamosHistorico) {
+            if (prestamo.getReturnDate() == null) {
+                prestamoADevolver = prestamo;
+            }
+        }
+        return prestamoADevolver;
+    }
+
+    private void calcularFechaDevolucion(String fechaPrestamo) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat sdfFormatoFinal = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        try {
+            Date date = sdf.parse(fechaPrestamo);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, 14); // Sumar 14 días
+
+            String fechaDevolucion = sdfFormatoFinal.format(calendar.getTime());
+
+            tvfechaDevolucion.setText("Fecha de devolución: " + fechaDevolucion);
+
+
+        } catch (ParseException e) {
+
+            System.out.println("Error al convertir la fecha: " + e.getMessage());
+
+        }
+    }
+
 }
