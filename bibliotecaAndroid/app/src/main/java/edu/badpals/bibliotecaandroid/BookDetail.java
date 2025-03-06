@@ -129,6 +129,24 @@ public class BookDetail extends AppCompatActivity {
             finish();
         });
 
+        br.getBookById(idBookActual, new BookRepository.ApiCallback<Book>() {
+            @Override
+            public void onSuccess(Book bookActual) {
+
+                BookLending prestamoADevolver = getBookLending(bookActual);
+
+                if (prestamoADevolver != null) {
+
+                    calcularFechaDevolucion(prestamoADevolver.getLendDate());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+            }
+        });
+
 
         reservar.setOnClickListener(view -> {
 
@@ -144,6 +162,11 @@ public class BookDetail extends AppCompatActivity {
 
                                 reservar.setText("Devolver");
                                 reservado.setText("No Disponible");
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                String fechaPrestamo = sdf.format(new Date());
+                                calcularFechaDevolucion(fechaPrestamo);
+
 
 
                             }
@@ -216,13 +239,13 @@ public class BookDetail extends AppCompatActivity {
         SimpleDateFormat sdfFormatoFinal = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
         try {
+
             Date date = sdf.parse(fechaPrestamo);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.DAY_OF_MONTH, 14); // Sumar 14 días
 
             String fechaDevolucion = sdfFormatoFinal.format(calendar.getTime());
-
             tvfechaDevolucion.setText("Fecha de devolución: " + fechaDevolucion);
 
 
