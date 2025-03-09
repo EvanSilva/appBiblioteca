@@ -167,8 +167,6 @@ public class BookDetail extends AppCompatActivity {
                                 String fechaPrestamo = sdf.format(new Date());
                                 calcularFechaDevolucion(fechaPrestamo);
 
-
-
                             }
 
                             @Override

@@ -42,7 +42,9 @@ public class BookExhibitor extends AppCompatActivity {
 
 
     private final ActivityResultLauncher<Intent> qrLauncher = registerForActivityResult(
+
             new ActivityResultContracts.StartActivityForResult(),
+
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();

@@ -3,11 +3,19 @@ package edu.badpals.bibliotecaandroid;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +40,8 @@ public class HallBookstore extends AppCompatActivity {
     TextView txtDatoCurioso;
     RecyclerView recyclerViewNovedades;
 
+    List<String> datosCuriosos;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +49,6 @@ public class HallBookstore extends AppCompatActivity {
         User usuarioLoggeado = UserProvider.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hall_bookstore);
-        Toast.makeText(HallBookstore.this, "Bienvenido, " + usuarioLoggeado.getName() + ", con el ID: " + usuarioLoggeado.getId() , Toast.LENGTH_SHORT).show();
         btnGoToBookExhibitor = findViewById(R.id.btnGotoBookExhibitor);
 
         btnGoToBookExhibitor.setOnClickListener(view -> {
@@ -133,8 +142,79 @@ public class HallBookstore extends AppCompatActivity {
                 )
         );
 
+        this.datosCuriosos = datosCuriosos;
+
         Collections.shuffle(datosCuriosos);
         txtDatoCurioso.setText(datosCuriosos.get(0));
 
+
+        // AÑADIR LA TOOLBAR
+
+        Toolbar tb = findViewById(R.id.toolbarMain);
+        setSupportActionBar(tb);
+
+        addMenuProvider(new MenuProvider() {
+
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menuvarios, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                if (id == R.id.toolbarWhoami) {
+
+                    Toast.makeText(HallBookstore.this, "Bienvenido, " + usuarioLoggeado.getName() + ", con el ID: " + usuarioLoggeado.getId() , Toast.LENGTH_SHORT).show();
+
+                }
+                if (id == R.id.toolbarExit) {
+
+                    Intent newIntent = new Intent(HallBookstore.this, MainActivity.class);
+                    startActivity(newIntent);
+                    finish();
+                }
+                if (id == R.id.toolbarDatoCurioso) {
+
+                    Collections.shuffle(datosCuriosos);
+                    txtDatoCurioso.setText(datosCuriosos.get(0));
+                    return true;
+
+                }
+
+                return false;
+            }
+        });
+
+
+        TextView tv = findViewById(R.id.txtDatoCurioso);
+        registerForContextMenu(tv);
+
     }
+
+    // TOOLBAR CONTEXTUAL ANCLADA A UN OBJETO
+
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.menudatocurioso, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.toolbarDatoCurioso) {
+
+            Collections.shuffle(datosCuriosos);
+            txtDatoCurioso.setText(datosCuriosos.get(0));
+            return true;
+
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+
 }

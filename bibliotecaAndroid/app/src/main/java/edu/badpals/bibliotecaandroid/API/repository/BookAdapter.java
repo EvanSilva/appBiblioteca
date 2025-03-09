@@ -22,14 +22,10 @@ public class BookAdapter extends RecyclerView.Adapter{
 
     List<Book> books = new ArrayList<>();
     ImageRepository ir = new ImageRepository();
-
     BookRepository bookRepository = new BookRepository();
-
     public BookAdapter(List<Book> books) {
         this.books = books;
-
     }
-
 
     @NonNull
     @Override
@@ -56,7 +52,6 @@ public class BookAdapter extends RecyclerView.Adapter{
                 view.getContext().startActivity(intent);
 
         });
-
 
         if (viewHolder.imgBook.equals("")) {
 
@@ -87,7 +82,6 @@ public class BookAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-
         if(books == null) return 0;
         return books.size();
     }
