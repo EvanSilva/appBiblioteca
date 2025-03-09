@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -176,11 +175,10 @@ public class HallBookstore extends AppCompatActivity {
                     startActivity(newIntent);
                     finish();
                 }
-                if (id == R.id.toolbarDatoCurioso) {
+                if (id == R.id.toolbarLibroFavorito) {
 
-                    Collections.shuffle(datosCuriosos);
-                    txtDatoCurioso.setText(datosCuriosos.get(0));
-                    return true;
+                    Intent newIntent = new Intent(HallBookstore.this, FavouriteBook.class);
+                    startActivity(newIntent);
 
                 }
 
@@ -205,7 +203,7 @@ public class HallBookstore extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.toolbarDatoCurioso) {
+        if (id == R.id.toolbarLibroFavorito) {
 
             Collections.shuffle(datosCuriosos);
             txtDatoCurioso.setText(datosCuriosos.get(0));

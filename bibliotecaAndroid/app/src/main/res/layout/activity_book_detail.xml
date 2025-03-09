@@ -100,6 +100,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <ImageButton
+            android:id="@+id/btnAñadirPreferido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="208dp"
+            app:layout_constraintEnd_toEndOf="@+id/imgBook"
+            app:layout_constraintTop_toTopOf="@+id/imgBook"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

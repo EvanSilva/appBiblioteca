@@ -60,6 +60,7 @@ public class PersonalData extends AppCompatActivity {
 
             bookAdapter = new BookAdapter(booksLent);
             recyclerViewPersonalData.setAdapter(bookAdapter);
+
         });
 
         btnGoBackToHall = findViewById(R.id.goBackToHall);

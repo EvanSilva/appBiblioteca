@@ -3,6 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/toolbarDatoCurioso"
+        android:id="@+id/toolbarLibroFavorito"
         android:title="Conseguir nuevo dato curioso" />
 </menu>

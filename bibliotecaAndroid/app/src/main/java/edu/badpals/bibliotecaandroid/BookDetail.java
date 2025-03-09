@@ -2,12 +2,15 @@ package edu.badpals.bibliotecaandroid;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,12 +46,14 @@ public class BookDetail extends AppCompatActivity {
     User usuarioLoggeado = UserProvider.getInstance();
 
     Button volver, reservar;
+    ImageButton preferido;
     ImageView imageView;
     TextView titulo, autor, isbn, reservado, tvfechaDevolucion;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
 
@@ -62,6 +67,7 @@ public class BookDetail extends AppCompatActivity {
         isbn = findViewById(R.id.txtIsbn);
         reservado = findViewById(R.id.txtDisponible);
         tvfechaDevolucion = findViewById(R.id.txtFechaDevolucion);
+        preferido = findViewById(R.id.btnAñadirPreferido);
 
         int idBookActual = getIntent().getIntExtra("id", 1);
 
@@ -216,6 +222,18 @@ public class BookDetail extends AppCompatActivity {
             });
         });
 
+        preferido.setOnClickListener(view -> {
+
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sp.edit();
+
+            editor.putInt("idLibroPreferido", idBookActual);
+
+            Toast.makeText(this, "Ahora este es tu libro favorito", Toast.LENGTH_SHORT).show();
+
+            editor.apply();
+        });
+
     }
 
     private static @Nullable BookLending getBookLending(Book bookActual) {
@@ -242,16 +260,13 @@ public class BookDetail extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.DAY_OF_MONTH, 14); // Sumar 14 días
-
             String fechaDevolucion = sdfFormatoFinal.format(calendar.getTime());
             tvfechaDevolucion.setText("Fecha de devolución: " + fechaDevolucion);
 
-
         } catch (ParseException e) {
-
             System.out.println("Error al convertir la fecha: " + e.getMessage());
-
         }
+
     }
 
 }

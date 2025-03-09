@@ -6,8 +6,8 @@
         android:id="@+id/toolbarWhoami"
         android:title="Quien soy" />
     <item
-        android:id="@+id/toolbarDatoCurioso"
-        android:title="Dato Curioso" />
+        android:id="@+id/toolbarLibroFavorito"
+        android:title="Favorito" />
     <item
         android:id="@+id/toolbarExit"
         android:title="Salir"
