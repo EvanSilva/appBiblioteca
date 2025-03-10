@@ -62,6 +62,17 @@ public class HallBookstore extends AppCompatActivity {
 
         vm = new ViewModelProvider(this).get(BookViewModel.class);
 
+        // Se observa el LiveData `getBooksLiveData()` del ViewModel `vm`.
+// El método `observe()` se usa para registrar un observador que reaccionará a los cambios en los datos.
+// Cuando `booksLiveData` cambia, el bloque de código dentro de `observe()` se ejecuta automáticamente.
+//
+// En este caso, si la lista `books` no es nula ni está vacía, se mezclan los libros aleatoriamente
+// con `Collections.shuffle(books)`, se toman los dos primeros y se muestran en un RecyclerView
+// usando un `BookAdapter`. Si la lista está vacía, se muestra un mensaje indicando que no hay
+// recomendaciones disponibles.
+//
+// `observe()` es útil porque permite que la UI se actualice automáticamente cuando los datos cambian
+// sin necesidad de hacer comprobaciones manuales en cada ciclo de vida de la actividad o fragmento.
         vm.getBooksLiveData().observe(this, books -> {
             if (books != null && !books.isEmpty()) {
                 Collections.shuffle(books);

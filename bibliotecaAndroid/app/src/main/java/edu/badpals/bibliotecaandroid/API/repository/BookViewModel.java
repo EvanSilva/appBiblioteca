@@ -25,7 +25,6 @@ public class BookViewModel extends ViewModel {
         bookRepository.getBooks(new BookRepository.ApiCallback<List<Book>>() {
             @Override
             public void onSuccess(List<Book> result) {
-
                 booksLiveData.setValue(result);
             }
 
